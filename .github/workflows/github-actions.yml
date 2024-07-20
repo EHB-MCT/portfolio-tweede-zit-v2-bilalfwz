@@ -6,6 +6,7 @@ on:
   pull_request:
     branches: [ "main" ]
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,10 +18,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+    - name: Set up docker
+      run: docker-compose up --build -d
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 22.3.0
+        node-version: ${{ matrix.node-version }}
         cache: npm
         cache-dependency-path: backend/package-lock.json
 
@@ -29,5 +32,13 @@ jobs:
       working-directory: backend
 
     - name: Run tests
-      run: npm test
+      env:
+        DB_HOST: localhost
+        DB_USER: postgres
+        DB_PORT: 5434
+        DB_PASSWORD: postgres 
+      run: |
+        npm install -g knex
+        knex migrate:latest
+        npm test
       working-directory: backend
