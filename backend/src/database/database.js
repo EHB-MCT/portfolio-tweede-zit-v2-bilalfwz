@@ -1,4 +1,6 @@
+import { config } from 'dotenv';
 import knex from 'knex';
+config();
 
 const database = knex({
     client: 'pg',
@@ -10,5 +12,7 @@ const database = knex({
         password: process.env.DB_PASSWORD
     }
 });
+
+
 
 export default database;
