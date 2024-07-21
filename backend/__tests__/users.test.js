@@ -1,7 +1,16 @@
 import request from "supertest";
 import app from "../src/index";
+import { test as testDB } from "../knexfile";
+import { clearDatabase } from "./utils";
+import knex from "knex";
+
 
 describe("Test the root path", () => {
+    beforeAll(async () => {
+        console.log('running before all')
+        await clearDatabase(testDB)
+        knex(testDB).table().truncate
+    });
     const data = {
         email: 'test2@gmail.com',
         firstname: 'test',
@@ -35,8 +44,6 @@ describe("Test the root path", () => {
         })
         .expect(200)
         .then(response => {
-            console.log(response.statusCode);
-            console.log(response.text);
             return expect(response.body).toBeDefined()
         })
     })
