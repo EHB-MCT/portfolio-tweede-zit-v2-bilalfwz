@@ -9,8 +9,8 @@ describe("Test the root path", () => {
     beforeAll(async () => {
         console.log('running before all')
         await clearDatabase(testDB)
-        knex(testDB).table().truncate
     });
+    
     const data = {
         email: 'test2@gmail.com',
         firstname: 'test',

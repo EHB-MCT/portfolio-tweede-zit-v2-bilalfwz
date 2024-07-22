@@ -1,7 +1,10 @@
 import request from "supertest";
 import app from "../src/index";
 import { UserRepository } from "../src/database/repositories/userRepository";
-
+import { clearDatabase } from "./utils";
+import {
+    test as testDB
+} from '../knexfile.js'
 const userData = {
     email: 'test2@gmail.com',
     firstname: 'test',
@@ -10,14 +13,19 @@ const userData = {
 }
 
 describe("Question tests", () => {
-    
-    
+    beforeAll(async () => {
+        console.log('running before all')
+        await clearDatabase(testDB)
+    });
+
     test("create question", async () => {
         const insertedUser = await UserRepository.registerUser(userData.email, userData.firstname, userData.lastname, userData.password);
+        console.log(insertedUser);
         const data = {
             question: "What is 2+2?",
             askedby: insertedUser.id
         }
+        console.log(data);
         const response = await request(app)
             .post('/questions')
             .send(data)

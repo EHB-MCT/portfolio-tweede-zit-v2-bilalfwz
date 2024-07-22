@@ -24,17 +24,13 @@ export class UserRepository {
     }
 
     static async registerUser(email, firstname, lastname, password) {
-        try {
-            const insertedUsers = await database('users').insert({
-                email,
-                firstname,
-                lastname,
-                password
-            }).returning('id');
-            const insertedId = insertedUsers[0].id;
-            return await this.getUserById(insertedId);
-        } catch (error) {
-            throw error
-        }
+        const insertedUsers = await database('users').insert({
+            email,
+            firstname,
+            lastname,
+            password
+        }).returning('id');
+        const insertedId = insertedUsers[0].id;
+        return await this.getUserById(insertedId);
     }
 }
