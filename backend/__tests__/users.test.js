@@ -2,12 +2,10 @@ import request from "supertest";
 import app from "../src/index";
 import { test as testDB } from "../knexfile";
 import { clearDatabase } from "./utils";
-import knex from "knex";
 
 
 describe("Test the root path", () => {
     beforeAll(async () => {
-        console.log('running before all')
         await clearDatabase(testDB)
     });
     
