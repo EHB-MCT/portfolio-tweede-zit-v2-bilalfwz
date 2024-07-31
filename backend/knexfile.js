@@ -21,3 +21,20 @@ export const development = {
     tableName: 'knex_migrations'
   }
 };
+export const test = {
+  client: 'postgresql',
+  connection: {
+    host: 'localhost',
+    port: 5435,
+    database: 'postgres',
+    user: 'postgres',
+    password: 'postgres',
+  },
+  pool: {
+    min: 2,
+    max: 10
+  },
+  migrations: {
+    tableName: 'knex_migrations'
+  }
+};
