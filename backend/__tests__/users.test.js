@@ -10,7 +10,7 @@ describe("Test the root path", () => {
     });
     
     const data = {
-        email: 'test2@gmail.com',
+        email: 'test@gmail.com',
         firstname: 'test',
         lastname: 'tester',
         password: 'testpassword'
