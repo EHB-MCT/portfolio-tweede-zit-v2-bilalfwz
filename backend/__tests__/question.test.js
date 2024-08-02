@@ -6,7 +6,7 @@ import {
     test as testDB
 } from '../knexfile.js'
 const userData = {
-    email: 'test2@gmail.com',
+    email: 'test@gmail.com',
     firstname: 'test',
     lastname: 'tester',
     password: 'testpassword'
