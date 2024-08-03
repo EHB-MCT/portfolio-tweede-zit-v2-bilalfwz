@@ -6,6 +6,7 @@ import {
     test as testDB
 } from '../knexfile.js'
 import { QuestionRepository } from "../src/database/repositories/questionRepository.js";
+import { AnswserRepository } from "../src/database/repositories/answerRepository.js";
 const userData = {
     email: 'test@gmail.com',
     firstname: 'test',
@@ -95,6 +96,16 @@ describe("Answers tests", () => {
             const isIncorrect = response.body.correct == false;
             return isIncorrect;
         }).toBeTruthy();
+    })
+
+    test("delete answer", async () => {
+        await request(app)
+            .delete(`/answers/${insertedAnswerId}`)
+            .send()
+            .expect(200)
+        
+        const answer = await AnswserRepository.getById(insertedAnswerId);
+        expect(answer === undefined).toBeTruthy();
     })
 
 });

@@ -1,5 +1,5 @@
 import express from 'express'
-import { CommentRepository } from '../database/repositories/commentRepository'
+import { CommentRepository } from '../database/repositories/commentRepository.js'
 import { body, param, validationResult, matchedData } from 'express-validator';
 
 const commentRoutes = express.Router()

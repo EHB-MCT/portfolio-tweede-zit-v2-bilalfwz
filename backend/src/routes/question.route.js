@@ -1,11 +1,20 @@
 import express from 'express'
 import { QuestionRepository } from '../database/repositories/questionRepository.js'
 import { param, validationResult, matchedData, body } from 'express-validator'
+import { CommentRepository } from '../database/repositories/commentRepository.js'
+import { AnswserRepository } from '../database/repositories/answerRepository.js'
 
 const questionRoutes = express.Router()
 questionRoutes.get('/', async (req, res, next) => {
     try {
         const questions = await QuestionRepository.getAllQuestions();
+        for (const question of questions) {
+            const comments = await CommentRepository.getCommentsByQuestionId(question.id);
+            question.comments = comments;
+
+            const answers = await AnswserRepository.getAnswerByQuestionId(question.id);
+            question.answers = answers;
+        }
         res.send(questions);
     } catch (error) {
         next(error)
@@ -14,14 +23,14 @@ questionRoutes.get('/', async (req, res, next) => {
 
 questionRoutes.get('/:id',
     [
-        param('id', 'id has to be a number').isNumeric()
+        param('id', 'id has to be a number').isNumeric().notEmpty()
     ],
     async (req, res, next) => {
         try {
             const result = validationResult(req);
             if (result.isEmpty()) {
                 const data = matchedData(req);
-                const question = await QuestionRepository.getQuestionById(data.id);
+                const question = await QuestionRepository.getById(data.id);
                 if (question === undefined) {
                     return res.status(404).send(`Question with id ${data.id} does not exist`)
                 }else {
@@ -61,6 +70,26 @@ questionRoutes.post('/',
         }
     }
 )
+
+questionRoutes.delete('/:id',
+    [
+        param('id', 'id has to be a number').isNumeric().notEmpty()
+    ],
+    async (req, res, next) => {
+        try {
+            const result = validationResult(req);
+            if (result.isEmpty()) {
+                const data = matchedData(req);
+                const question = await QuestionRepository.deleteQuestion(data.id);
+                res.status(200).send(question);
+            } else {
+                return res.status(400).send(result.errors.map(error => error.msg).join("\n"))
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+);
 
 export {
     questionRoutes

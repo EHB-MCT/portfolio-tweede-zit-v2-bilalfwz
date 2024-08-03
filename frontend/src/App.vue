@@ -1,16 +1,20 @@
 <template>
   <header>
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/login">Login</RouterLink>
+        <RouterLink v-if="store.loggedIn" to="/">Home</RouterLink>
+        <RouterLink v-if="!store.loggedIn" to="/login">Login</RouterLink>
+        <RouterLink @click="store.logOut" v-if="store.loggedIn" to="/login">Logout</RouterLink>
       </nav>
   </header>
-
+</br>
   <RouterView />
 </template>
 
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { useUserStore } from '@/stores/userStore.js'
+
+const store = useUserStore();
 </script>
 
 <style scoped>

@@ -34,12 +34,20 @@ userRoutes.post('/login',
         body('password', 'password cannot be empty').notEmpty()
     ],
     async (req, res, next) => {
+        console.log(req.body)
         try {
             const result = validationResult(req);
             if (result.isEmpty()) {
                 const data = matchedData(req);
+                console.log(data)
                 const user = await UserRepository.checkLogin(data.email, data.password);
-                return res.status(200).send(user);
+                console.log(user)
+                if (user) {
+                    delete user.password;
+                    return res.status(200).send(user);
+                } else {
+                    return res.status(401).send('Authentication error, invalid email or password');
+                }
             } else {
                 return res.status(400).send(result.errors.map(error => error.msg).join("\n"))
             }

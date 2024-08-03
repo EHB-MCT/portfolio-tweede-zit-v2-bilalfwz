@@ -18,10 +18,7 @@ export class CommentRepository {
         const comments = await database.table('comment').where({
             questionid: questionId
         }).select()
-        if (comments.length > 0) {
-            return comments[0]
-        }
-        return undefined;
+        return comments;
     }
 
     static async createComment(comment, questionid, commentedby) {

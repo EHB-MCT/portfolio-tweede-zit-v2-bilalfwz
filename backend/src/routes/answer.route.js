@@ -21,7 +21,7 @@ answerRoutes.get('/:id',
             const result = validationResult(req);
             if (result.isEmpty()) {
                 const data = matchedData(req);
-                const answer = await AnswserRepository.getAnswerById(data.id);
+                const answer = await AnswserRepository.getById(data.id);
                 if (answer === undefined) {
                     return res.status(404).send(`Answer with id ${data.id} does not exist`)
                 }else {
@@ -103,6 +103,26 @@ answerRoutes.post('/',
         }
     }
 )
+
+answerRoutes.delete('/:id',
+    [
+        param('id', 'id has to be a number').isNumeric()
+    ],
+    async (req, res, next) => {
+        try {
+            const result = validationResult(req);
+            if (result.isEmpty()) {
+                const data = matchedData(req);
+                const answer = await AnswserRepository.deleteAnswer(data.id);
+                res.status(200).send(answer);
+            } else {
+                return res.status(400).send(result.errors.map(error => error.msg).join("\n"))
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+);
 
 export {
     answerRoutes

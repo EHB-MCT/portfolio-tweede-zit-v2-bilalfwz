@@ -5,7 +5,7 @@ export class QuestionRepository {
         return await database.table('question').select();
     }
 
-    static async getQuestionById(questionid) {
+    static async getById(questionid) {
         const questions = await database.table('question').where({
             id: questionid
         }).select()
@@ -20,6 +20,12 @@ export class QuestionRepository {
             question,
             askedby: userid
         }).returning('id')
-        return await this.getQuestionById(insertedIds[0].id);
+        return await this.getById(insertedIds[0].id);
+    }
+
+    static async deleteQuestion(id) {
+        await database.table('question').where({
+            id
+        }).del()
     }
 }
