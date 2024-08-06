@@ -1,38 +1,49 @@
 import database from "../database.js";
+import { UserRepository } from "./userRepository.js";
 
 export class AnswserRepository {
-    static async getAll() {
-        return await database.table('answer').select();
+    static async _loadRelationship(answer) {
+        const user = await UserRepository.getById(answer.answeredby)
+        answer.user = user;
+        return answer;
     }
 
-    static async getAnswerById(answerId) {
+    static async getAll() {
+        const answers =  await database.table('answer').select();
+        for (let answer of answers) {
+            answer = await this._loadRelationship(answer)
+        }
+        return answers
+    }
+
+    static async getById(answerId) {
         const answsers = await database.table('answer').where({
             id: answerId
         }).select()
         if (answsers.length > 0) {
-            return answsers[0]
+            return this._loadRelationship(answsers[0])
         }
         return undefined;
     }
     
     static async getAnswerByQuestionId(questionId) {
-        const answsers = await database.table('answer').where({
+        const answers = await database.table('answer').where({
             questionid: questionId
         }).select()
-        if (answsers.length > 0) {
-            return answsers[0]
+        for (let answer of answers) {
+            answer = await this._loadRelationship(answer)
         }
-        return undefined;
+        return answers
     }
 
     static async markAnswerCorrect(id) {
         await this._updateAnswerStatus(id, true)
-        return await this.getAnswerById(id)
+        return await this.getById(id)
     }
     
     static async markAnswerIncorrect(id) {
         await this._updateAnswerStatus(id, false)
-        return await this.getAnswerById(id)
+        return await this.getById(id)
     }
 
     static async _updateAnswerStatus(id, correct) {
@@ -50,6 +61,12 @@ export class AnswserRepository {
             correct,
             answeredby
         }).returning('id')
-        return await this.getAnswerById(insertedIds[0].id);
+        return await this.getById(insertedIds[0].id);
+    }
+
+    static async deleteAnswer(id) {
+        await database.table('answer').where({
+            id
+        }).del()
     }
 }

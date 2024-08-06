@@ -9,7 +9,7 @@ export function up(knex) {
         });
         table.string('question').notNullable();
         table.integer('askedby').nullable();
-        table.foreign('askedby').references('id').inTable('users')
+        table.foreign('askedby').references('id').inTable('users').onDelete("CASCADE")
         table.timestamps(true, true)
     });
 }

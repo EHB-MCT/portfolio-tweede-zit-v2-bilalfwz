@@ -14,14 +14,14 @@ questionRoutes.get('/', async (req, res, next) => {
 
 questionRoutes.get('/:id',
     [
-        param('id', 'id has to be a number').isNumeric()
+        param('id', 'id has to be a number').isNumeric().notEmpty()
     ],
     async (req, res, next) => {
         try {
             const result = validationResult(req);
             if (result.isEmpty()) {
                 const data = matchedData(req);
-                const question = await QuestionRepository.getQuestionById(data.id);
+                const question = await QuestionRepository.getById(data.id);
                 if (question === undefined) {
                     return res.status(404).send(`Question with id ${data.id} does not exist`)
                 }else {
@@ -61,6 +61,26 @@ questionRoutes.post('/',
         }
     }
 )
+
+questionRoutes.delete('/:id',
+    [
+        param('id', 'id has to be a number').isNumeric().notEmpty()
+    ],
+    async (req, res, next) => {
+        try {
+            const result = validationResult(req);
+            if (result.isEmpty()) {
+                const data = matchedData(req);
+                const question = await QuestionRepository.deleteQuestion(data.id);
+                res.status(200).send(question);
+            } else {
+                return res.status(400).send(result.errors.map(error => error.msg).join("\n"))
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+);
 
 export {
     questionRoutes

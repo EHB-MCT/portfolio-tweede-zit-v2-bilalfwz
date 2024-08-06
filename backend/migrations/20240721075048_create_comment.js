@@ -9,9 +9,9 @@ export function up(knex) {
         });
         table.string('comment').notNullable()
         table.integer('commentedby').notNullable()
-        table.foreign('commentedby').references('id').inTable('users')
+        table.foreign('commentedby').references('id').inTable('users').onDelete("CASCADE")
         table.integer('questionid').notNullable()
-        table.foreign('questionid').references('id').inTable('question')
+        table.foreign('questionid').references('id').inTable('question').onDelete("CASCADE")
         table.timestamps(true, true)
     })
 }

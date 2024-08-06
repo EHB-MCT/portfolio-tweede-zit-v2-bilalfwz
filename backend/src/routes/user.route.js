@@ -1,6 +1,12 @@
 import express from 'express'
-import { body, validationResult, matchedData } from 'express-validator'
-import { UserRepository } from '../database/repositories/userRepository.js';
+import {
+    body,
+    validationResult,
+    matchedData
+} from 'express-validator'
+import {
+    UserRepository
+} from '../database/repositories/userRepository.js';
 
 const userRoutes = express.Router()
 
@@ -39,7 +45,12 @@ userRoutes.post('/login',
             if (result.isEmpty()) {
                 const data = matchedData(req);
                 const user = await UserRepository.checkLogin(data.email, data.password);
-                return res.status(200).send(user);
+                if (user) {
+                    delete user.password;
+                    return res.status(200).send(user);
+                } else {
+                    return res.status(401).send('Authentication error, invalid email or password');
+                }
             } else {
                 return res.status(400).send(result.errors.map(error => error.msg).join("\n"))
             }

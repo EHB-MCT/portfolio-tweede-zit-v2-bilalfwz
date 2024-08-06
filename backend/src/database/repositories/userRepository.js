@@ -1,12 +1,15 @@
 import database from "../database.js";
 
 export class UserRepository {
-    static async getUserById(id) {
-        const user = await database('users').where({
+    static async getById(id) {
+        let user = await database('users').where({
             id: id
         }).select();
         if (user.length > 0) {
-            return user[0]
+            user = user[0];
+            delete user['password'];
+            console.log(user);
+            return user
         }
         return undefined;
     }
@@ -31,6 +34,12 @@ export class UserRepository {
             password
         }).returning('id');
         const insertedId = insertedUsers[0].id;
-        return await this.getUserById(insertedId);
+        return await this.getById(insertedId);
+    }
+
+    static async deleteUser(id) {
+        await database.table('users').where({
+            id
+        }).del()
     }
 }
