@@ -35,17 +35,30 @@
             <v-list lines="one">
               <v-list-item
                 v-for="answer of question.answers"
-                :key="answer.id"
-                :title="answer.answer"
-              ></v-list-item>
+                :key="answer.id">
+                <template v-slot title>
+                  <div :class="answer.correct ? 'item correct' : 'item incorrect'">
+                    <p> {{ answer.user.firstname }}: {{ answer.answer }} </p>
+                    <div>
+                      <v-btn size="small" color="success" v-if="user.id == question.askedby && !answer.correct" @click="updateQuestion(answer,true)">Correct</v-btn>
+                      <v-btn size="small" color="error" v-if="user.id == question.askedby && answer.correct" @click="updateQuestion(answer, false)">Not correct</v-btn>
+                    </div>
+                  </div>
+                </template>
+            </v-list-item>
             </v-list>
             <p>comments: </p>
             <v-list lines="one">
               <v-list-item
                 v-for="comment of question.comments"
-                :key="comment.id"
-                :title="comment.comment"
-              ></v-list-item>
+                :key="comment.id">
+
+                <template v-slot title>
+                  <div class='item'>
+                    <p> {{ comment.user.firstname }}: {{ comment.comment }} </p>
+                  </div>
+                </template>
+              </v-list-item>
             </v-list>
             <v-text-field
                 v-model="question.answerToPost"
@@ -84,7 +97,7 @@
 </template>
 
 <script setup>
-import { fetchQuestions, createQuestion, createComment, createAnswer } from '../api.js'
+import { fetchQuestions, createQuestion, createComment, createAnswer, updateAnswerStatus } from '../api.js'
 import { ref, onBeforeMount } from 'vue';
 import { useUserStore } from '@/stores/userStore.js';
 let dialog = ref(false);
@@ -95,6 +108,8 @@ const user = useUserStore();
 onBeforeMount( async () => {
   console.log("getting questions")
   questions.value = await fetchQuestions()
+  console.log(user.id)
+  console.log(questions.value)
 })
 
 async function postComment(question) {
@@ -116,4 +131,20 @@ async function postQuestion() {
   questions.value = await fetchQuestions();
 }
 
+async function updateQuestion(answer, correct){
+  const result = await updateAnswerStatus(answer, correct);
+  questions.value = await fetchQuestions();
+}
+
 </script>
+
+<style scoped>
+.item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.correct {
+  border: 1px solid green;
+}
+</style>

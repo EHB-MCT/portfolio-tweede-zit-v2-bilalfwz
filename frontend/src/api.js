@@ -101,11 +101,27 @@ async function createComment(comment, questionId, commentedBy) {
     return result;
 }
 
+async function updateAnswerStatus(answer, correct) {
+    const prepend = correct ? 'correct' : 'incorrect';
+    const response = await fetch(`${BACKEND_URL}/answers/${answer.id}/${prepend}`, {
+        method: "PUT",
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    console.log(response);
+    console.log(response.status)
+    const result = await response.json();
+    console.log(result);
+    return result;
+}
+
 export {
     logIn,
     fetchQuestions,
     registerUser, 
     createQuestion,
     createComment,
-    createAnswer
+    createAnswer,
+    updateAnswerStatus
 }
