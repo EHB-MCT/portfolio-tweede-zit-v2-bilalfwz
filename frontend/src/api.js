@@ -12,16 +12,20 @@ async function logIn(email, password) {
         }
     });
 
-    console.log(response);
-    console.log(response.status)
-    const result = await response.json();
-    console.log(result);
-    return result;
+    if (response.status === 200) {
+        return await response.json()
+    } else {
+        throw new Error((await response.text()))
+    }
 }
 
 async function fetchQuestions() {
     const response = await fetch(`${BACKEND_URL}/questions`);
-    return await response.json();
+    if (response.status === 200) {
+        return await response.json()
+    } else {
+        throw new Error((await response.text()))
+    }
 }
 
 async function createQuestion(question, askedBy) {
@@ -35,11 +39,11 @@ async function createQuestion(question, askedBy) {
             'Content-Type': 'application/json'
         }
     });
-    console.log(response);
-    console.log(response.status)
-    const result = await response.json();
-    console.log(result);
-    return result;
+    if (response.status === 201) {
+        return await response.json()
+    } else {
+        throw new Error((await response.text()))
+    }
 }
 
 async function registerUser(firstname, lastname, email, password) {
@@ -58,7 +62,7 @@ async function registerUser(firstname, lastname, email, password) {
     if (response.status === 201) {
         return await response.json()
     } else {
-        return undefined;
+        throw new Error((await response.text()))
     }
 }
 
@@ -75,11 +79,11 @@ async function createAnswer(answer, questionId, answeredBy) {
             'Content-Type': 'application/json'
         }
     });
-    console.log(response);
-    console.log(response.status)
-    const result = await response.json();
-    console.log(result);
-    return result;
+    if (response.status === 201) {
+        return await response.json()
+    } else {
+        throw new Error((await response.text()))
+    }
 }
 
 async function createComment(comment, questionId, commentedBy) {
@@ -94,11 +98,11 @@ async function createComment(comment, questionId, commentedBy) {
             'Content-Type': 'application/json'
         }
     });
-    console.log(response);
-    console.log(response.status)
-    const result = await response.json();
-    console.log(result);
-    return result;
+    if (response.status === 201) {
+        return await response.json()
+    } else {
+        throw new Error((await response.text()))
+    }
 }
 
 async function updateAnswerStatus(answer, correct) {
@@ -109,11 +113,11 @@ async function updateAnswerStatus(answer, correct) {
             'Content-Type': 'application/json'
         }
     });
-    console.log(response);
-    console.log(response.status)
-    const result = await response.json();
-    console.log(result);
-    return result;
+    if (response.status === 200) {
+        return await response.json()
+    } else {
+        throw new Error((await response.text()))
+    }
 }
 
 export {

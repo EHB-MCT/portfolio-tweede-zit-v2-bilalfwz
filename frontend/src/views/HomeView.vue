@@ -2,6 +2,12 @@
   <main>
     <h1>Hello, {{ user.firstname }}</h1>
     <div class="text-center pa-4">
+      <v-alert
+        v-if="errorMessage != ''"
+        color="error"
+        title="Error happened"
+        :text="errorMessage"
+      ></v-alert>
       <v-btn @click="dialog = true">
         Ask question
       </v-btn>
@@ -100,6 +106,7 @@
 import { fetchQuestions, createQuestion, createComment, createAnswer, updateAnswerStatus } from '../api.js'
 import { ref, onBeforeMount } from 'vue';
 import { useUserStore } from '@/stores/userStore.js';
+let errorMessage = ref('')
 let dialog = ref(false);
 let questions = ref([]);
 let question = ref("")
@@ -113,27 +120,47 @@ onBeforeMount( async () => {
 })
 
 async function postComment(question) {
-  console.log(question)
-  const result = await createComment(question.commentToPost, question.id, user.id);
-  questions.value = await fetchQuestions();
+  try {
+    console.log(question)
+    const result = await createComment(question.commentToPost, question.id, user.id);
+    questions.value = await fetchQuestions();
+    errorMessage.value = ''
+  } catch (error) {
+    errorMessage.value = error.message;
+  }
 }
 
 async function postAnswer(question) {
-  console.log(question)
-  const result = await createAnswer(question.answerToPost, question.id, user.id)
-  questions.value = await fetchQuestions();
+  try {
+    console.log(question)
+    const result = await createAnswer(question.answerToPost, question.id, user.id)
+    questions.value = await fetchQuestions();
+    errorMessage.value = ''
+  } catch (error) {
+    errorMessage.value = error.message;
+  }
 }
 
 async function postQuestion() {
-  const result = await createQuestion(question.value, user.id)
-  console.log(result);
-  dialog.value = false;
-  questions.value = await fetchQuestions();
+  try {
+    const result = await createQuestion(question.value, user.id)
+    console.log(result);
+    dialog.value = false;
+    questions.value = await fetchQuestions();
+    errorMessage.value = ''
+  } catch (error) {
+    errorMessage.value = error.message;
+  }
 }
 
 async function updateQuestion(answer, correct){
-  const result = await updateAnswerStatus(answer, correct);
-  questions.value = await fetchQuestions();
+  try {
+    const result = await updateAnswerStatus(answer, correct);
+    questions.value = await fetchQuestions();
+    errorMessage.value = ''
+  } catch (error) {
+    errorMessage.value = error.message
+  }
 }
 
 </script>

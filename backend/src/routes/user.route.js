@@ -1,6 +1,12 @@
 import express from 'express'
-import { body, validationResult, matchedData } from 'express-validator'
-import { UserRepository } from '../database/repositories/userRepository.js';
+import {
+    body,
+    validationResult,
+    matchedData
+} from 'express-validator'
+import {
+    UserRepository
+} from '../database/repositories/userRepository.js';
 
 const userRoutes = express.Router()
 
@@ -34,14 +40,11 @@ userRoutes.post('/login',
         body('password', 'password cannot be empty').notEmpty()
     ],
     async (req, res, next) => {
-        console.log(req.body)
         try {
             const result = validationResult(req);
             if (result.isEmpty()) {
                 const data = matchedData(req);
-                console.log(data)
                 const user = await UserRepository.checkLogin(data.email, data.password);
-                console.log(user)
                 if (user) {
                     delete user.password;
                     return res.status(200).send(user);

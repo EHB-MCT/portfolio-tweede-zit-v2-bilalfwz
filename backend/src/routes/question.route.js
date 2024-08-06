@@ -6,8 +6,6 @@ const questionRoutes = express.Router()
 questionRoutes.get('/', async (req, res, next) => {
     try {
         const questions = await QuestionRepository.getAllQuestions();
-        console.log(questions)
-        console.log(questions[0].answers)
         res.send(questions);
     } catch (error) {
         next(error)

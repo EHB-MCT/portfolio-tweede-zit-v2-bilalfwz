@@ -1,6 +1,6 @@
 <template>
     <main>
-        <v-card class="mx-auto" width="450">
+        <v-card class="mx-auto" width="500">
             <v-tabs
                 v-model="tab"
                 bg-color="primary"
@@ -14,6 +14,12 @@
                 <v-tabs-window-item value="login">
                     <v-sheet class="mx-auto login-form" width="450">
                         <h1 class="title">Welcome to student forum</h1>
+                        <v-alert
+                            v-if="errorMessage != ''"
+                            color="error"
+                            title="Error happened"
+                            :text="errorMessage"
+                        ></v-alert>
                         <v-form @submit.prevent>
                             <v-text-field
                                 v-model="username"
@@ -32,6 +38,12 @@
                 <v-tabs-window-item value="register">
                     <v-sheet class="mx-auto login-form" width="450">
                         <h1 class="title">Welcome to student forum</h1>
+                        <v-alert
+                            v-if="errorMessage != ''"
+                            color="error"
+                            title="Error happened"
+                            :text="errorMessage"
+                        ></v-alert>
                         <v-form @submit.prevent>
                             <v-text-field
                                 v-model="firstname"
@@ -62,9 +74,10 @@
 
 <script setup>
 import { logIn, registerUser } from '../api.js'
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
 import router from '@/router/index.js'
+let errorMessage = ref('');
 const tab = ref("")
 const username = ref("");
 const password = ref("")
@@ -76,19 +89,39 @@ const email = ref("")
 
 console.log(user.state)   
 
+watch(tab, (newValue, oldValue) => {
+    // we need to reset some variables
+    errorMessage.value = ""
+    username.value = ""
+    password.value = ""
+    firstname.value = ""
+    lastname.value = ""
+    email.value = ""
+});
+
 async function sendLogin() {
-    const result = await logIn(username.value, password.value);
-    if (result) {
-        console.log(result);
-        user.logIn(result.firstname, result.lastname, result.email, result.id)
-        router.push({name: 'home'})
-    }
+    try {
+        const result = await logIn(username.value, password.value);
+        if (result) {
+            console.log(result);
+            user.logIn(result.firstname, result.lastname, result.email, result.id)
+            router.push({name: 'home'})
+        }
+        errorMessage.value = ''
+    } catch (error) {
+        errorMessage.value = error.message;
+    } 
 }
 
 async function register() {
-    const result = await registerUser(firstname.value, lastname.value, email.value, password.value);
-    if (result) {
-        tab.value = 'login'
+    try {
+        const result = await registerUser(firstname.value, lastname.value, email.value, password.value);
+        if (result) {
+            tab.value = 'login'
+        }
+        errorMessage.value = ''
+    } catch (error) {
+        errorMessage.value = error.message;
     }
 }
 </script>
