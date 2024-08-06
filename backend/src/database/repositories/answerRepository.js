@@ -1,8 +1,19 @@
 import database from "../database.js";
+import { UserRepository } from "./userRepository.js";
 
 export class AnswserRepository {
+    static async _loadRelationship(answer) {
+        const user = await UserRepository.getById(answer.answeredby)
+        answer.user = user;
+        return answer;
+    }
+
     static async getAll() {
-        return await database.table('answer').select();
+        const answers =  await database.table('answer').select();
+        for (let answer of answers) {
+            answer = await this._loadRelationship(answer)
+        }
+        return answers
     }
 
     static async getById(answerId) {
@@ -10,7 +21,7 @@ export class AnswserRepository {
             id: answerId
         }).select()
         if (answsers.length > 0) {
-            return answsers[0]
+            return this._loadRelationship(answsers[0])
         }
         return undefined;
     }
@@ -19,6 +30,9 @@ export class AnswserRepository {
         const answers = await database.table('answer').where({
             questionid: questionId
         }).select()
+        for (let answer of answers) {
+            answer = await this._loadRelationship(answer)
+        }
         return answers
     }
 

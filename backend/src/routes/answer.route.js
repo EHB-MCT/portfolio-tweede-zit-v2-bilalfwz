@@ -46,7 +46,7 @@ answerRoutes.put('/:id/correct',
             if (result.isEmpty()) {
                 const data = matchedData(req);
                 const answer = await AnswserRepository.markAnswerCorrect(data.id);
-                res.status(200).send(answer);
+                return res.status(200).send(answer);
             } else {
                 return res.status(400).send(result.errors.map(error => error.msg).join("\n"))
             }
@@ -66,7 +66,7 @@ answerRoutes.put('/:id/incorrect',
             if (result.isEmpty()) {
                 const data = matchedData(req);
                 const answer = await AnswserRepository.markAnswerIncorrect(data.id);
-                res.status(200).send(answer);
+                return res.status(200).send(answer);
             } else {
                 return res.status(400).send(result.errors.map(error => error.msg).join("\n"))
             }

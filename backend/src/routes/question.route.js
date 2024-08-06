@@ -1,20 +1,13 @@
 import express from 'express'
 import { QuestionRepository } from '../database/repositories/questionRepository.js'
 import { param, validationResult, matchedData, body } from 'express-validator'
-import { CommentRepository } from '../database/repositories/commentRepository.js'
-import { AnswserRepository } from '../database/repositories/answerRepository.js'
 
 const questionRoutes = express.Router()
 questionRoutes.get('/', async (req, res, next) => {
     try {
         const questions = await QuestionRepository.getAllQuestions();
-        for (const question of questions) {
-            const comments = await CommentRepository.getCommentsByQuestionId(question.id);
-            question.comments = comments;
-
-            const answers = await AnswserRepository.getAnswerByQuestionId(question.id);
-            question.answers = answers;
-        }
+        console.log(questions)
+        console.log(questions[0].answers)
         res.send(questions);
     } catch (error) {
         next(error)

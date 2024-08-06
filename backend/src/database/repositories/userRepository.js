@@ -2,11 +2,14 @@ import database from "../database.js";
 
 export class UserRepository {
     static async getById(id) {
-        const user = await database('users').where({
+        let user = await database('users').where({
             id: id
         }).select();
         if (user.length > 0) {
-            return user[0]
+            user = user[0];
+            delete user['password'];
+            console.log(user);
+            return user
         }
         return undefined;
     }
