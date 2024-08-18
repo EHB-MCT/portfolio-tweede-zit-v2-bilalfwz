@@ -7,11 +7,18 @@ This API is written in JavaScript (Nodejs) and is designed to serve a closed for
 To get the API up and running, follow these steps:
 
 1. Open your terminal and navigate to the project directory.
-2. Run the following command to build and start the Docker containers:
+2. **Create a `.env` file with the following database credentials:**
+    ```plaintext
+    DB_HOST=
+    DB_USER=
+    DB_PASSWORD=
+    DB_PORT=
     ```
+3. Run the following command to build and start the Docker containers:
+    ```bash
     docker-compose up --build
     ```
-3. Once the Docker containers are up and running, you can access the API at [http://localhost:8080](http://localhost:8080).
+4. Once the Docker containers are up and running, you can access the API at [http://localhost:8080](http://localhost:8080).
 
 ## Testing
 To run all the tests, use the following command:
